@@ -55,7 +55,7 @@ def main():
     if has_pandas:
         print(time_elapses.mean(axis=0)*1000)
     else:
-        for key, value in time_elapses:
+        for key, value in time_elapses.items():
             print(key+": ", sum(value)/len(value))
     
     
