@@ -1,0 +1,24 @@
+version: '3' 
+services:     
+    jupyter:         
+        container_name: esse-tutorial-jupyter         
+        user: $CURRENT_USER         
+        environment:           
+            - JUPYTER_PORT=$JUPYTER_PORT
+            - JUPYTER_SECONDARY_PORT=$JUPYTER_SECONDARY_PORT           
+            - MEM_LIMIT=$MEM_LIMIT           
+            - CPU_LIMIT=$CPU_LIMIT         
+        build:
+                      context: ./container_definitions             
+                      dockerfile: Dockerfile-Jupyter         
+        ports:             
+                      - $JUPYTER_PORT:${JUPYTER_PORT} # Porta onde será executado o JupyterLab
+                      - $JUPYTER_SECONDARY_PORT:${JUPYTER_SECONDARY_PORT} # Porta onde será executado (se houver) o dashboard         
+        stdin_open: true         
+        tty: true         
+        deploy:
+                  resources:
+                          limits:
+                              memory: $MEM_LIMIT         
+        volumes:        
+                  - ../:/home/jptr:rw

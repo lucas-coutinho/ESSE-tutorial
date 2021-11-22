@@ -1,0 +1,82 @@
+FROM ubuntu:latest
+
+ENV TZ=America/Sao_Paulo
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+
+RUN --mount=type=cache,mode=0755,target=/var/cache/apt \
+        apt-get update && \
+        apt-get install software-properties-common -y
+
+
+RUN --mount=type=cache,mode=0755,target=/var/cache/apt \
+        add-apt-repository ppa:deadsnakes/ppa -y
+
+
+
+RUN --mount=type=cache,mode=0755,target=/var/cache/apt \
+        apt-get install \
+        python3.8 \
+        python3.8-distutils \
+        python3-pip \
+        curl \
+        -y
+
+
+
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+
+RUN --mount=type=cache,mode=0755,target=/var/cache/apt apt-get update
+RUN --mount=type=cache,mode=0755,target=/var/cache/apt apt-get install nodejs -y
+
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pip \
+        python3 -m pip install pip setuptools distlib -U
+
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pip \
+        pip3 install \
+        'jupyterlab>=3' \
+        'ipywidgets>=7.6' \
+        jupyter-dash \
+        autopep8 \
+        black \
+        yapf \
+        isort \
+        jupyterlab_code_formatter \
+        jupyterlab-spellchecker \
+        jupyter-resource-usage \
+        jupyterlab-topbar \
+        jupyterlab-system-monitor \
+        -U
+
+
+
+RUN jupyter labextension install \
+        jupyterlab-plotly \
+        @jupyter-widgets/jupyterlab-manager \
+        @jupyterlab/theme-dark-extension \
+        jupyterlab-theme-solarized-dark \
+        plotlywidget
+
+
+
+RUN jupyter lab clean && \
+        jlpm cache clean && \
+        npm cache clean --force
+
+
+
+COPY requirements.txt .
+
+RUN pip3 install -r requirements.txt 
+
+
+WORKDIR /home/jptr
+
+ENV HOME /home/jptr
+
+# Dispara uma instância do JupyterLab
+
+ENV JUPYTER_PORT 8888
+
+CMD jupyter lab --ip="0.0.0.0" --port=$JUPYTER_PORT --no-browser --allow-root --ResourceUseDisplay.track_cpu_percent=True
