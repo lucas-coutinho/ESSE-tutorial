@@ -7,7 +7,7 @@ Aqui contém o necessário para executar o tutorial apresentado no ESSE 2021.
 
 ```bash
 torch==1.5.0
-torchvision==0.5.0
+torchvision==0.6.0
 ```
 
 ## **Uso**
