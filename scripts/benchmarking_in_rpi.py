@@ -35,7 +35,8 @@ def main():
 
     random_images_for_benchmarking = torch.Tensor(100,3,32,32) #100 random images
     img_loader = DataLoader(list(zip(random_images_for_benchmarking, torch.Tensor(100,1))), batch_size=1)
-
+    torch.backends.quantized.engine = 'qnnpack'
+               
     time_elapses = pd.DataFrame([]) if has_pandas else {}
     if args.path_to_float_model:
         print("Full precision Model:")
