@@ -4,7 +4,12 @@ from torch.functional import Tensor
 from torch.utils.data import DataLoader
 import time
 
-import pandas as pd 
+
+try:
+    import pandas as pd 
+    has_pandas = True
+except:
+    has_pandas = False
 import matplotlib.pyplot as plt
 
 def run_benchmark(model_file, img_loader, num_batches):
@@ -31,7 +36,7 @@ def main():
     random_images_for_benchmarking = torch.Tensor(100,3,32,32) #100 random images
     img_loader = DataLoader(list(zip(random_images_for_benchmarking, torch.Tensor(100,1))), batch_size=1)
 
-    time_elapses = pd.DataFrame([])
+    time_elapses = pd.DataFrame([]) if has_pandas else {}
     if args.path_to_float_model:
         print("Full precision Model:")
         time_elapses['FullPrecision'] = [run_benchmark(args.path_to_float_model, img_loader,1) for i in range(10)]
@@ -45,8 +50,13 @@ def main():
         time_elapses['QAT'] = [run_benchmark(args.path_to_qat, img_loader,1) for _ in range(10)]
         
 
+    print('\n\n\n')
 
-    print(time_elapses.mean(axis=0)*1000)
+    if has_pandas:
+        print(time_elapses.mean(axis=0)*1000)
+    else:
+        for key, value in time_elapses:
+            print(key+": ", sum(value)/len(value))
     
     
 
