@@ -27,3 +27,10 @@ optional arguments:
                         Path where is stored the Quantization Aware quantized
                         model
 ```
+
+## **Uso com docker**
+Para rodar o jupyter notebook com docker é necessário:
+-   Instalar jupyter lab
+-   Instalar docker e docker-compose
+-   executar ```bash source build.sh && source run.sh``` 
+-   Utilizar o notebook da mesma forma q no colab
